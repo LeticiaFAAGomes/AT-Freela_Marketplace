@@ -12,6 +12,8 @@ management:
     health:
       show-details: always
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     register-with-eureka: false
     fetch-registry: false
