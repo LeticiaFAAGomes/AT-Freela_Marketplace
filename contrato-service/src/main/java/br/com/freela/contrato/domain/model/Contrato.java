@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
 public class Contrato {
     private final ContratoId id;
     private final ClienteId clienteId;
@@ -21,6 +20,24 @@ public class Contrato {
     private StatusContrato status;
     private final Instant criadoEm;
     private final List<DomainEvent> domainEvents = new ArrayList<>();
+
+    public Contrato(
+            ContratoId id,
+            ClienteId clienteId,
+            FreelancerId freelancerId,
+            Titulo titulo,
+            ValorMonetario valor,
+            StatusContrato status,
+            Instant criadoEm
+    ) {
+        this.id = id;
+        this.clienteId = clienteId;
+        this.freelancerId = freelancerId;
+        this.titulo = titulo;
+        this.valor = valor;
+        this.status = status;
+        this.criadoEm = criadoEm;
+    }
 
     public static Contrato criar(ClienteId clienteId, FreelancerId freelancerId, Titulo titulo, ValorMonetario valor) {
         var contrato = new Contrato(ContratoId.de(UUID.randomUUID()), clienteId, freelancerId, titulo, valor,
