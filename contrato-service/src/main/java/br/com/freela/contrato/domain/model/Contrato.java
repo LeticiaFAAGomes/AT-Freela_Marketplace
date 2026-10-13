@@ -2,6 +2,7 @@ package br.com.freela.contrato.domain.model;
 
 import br.com.freela.contrato.domain.event.ContratoCriado;
 import br.com.freela.contrato.domain.shared.DomainEvent;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,12 +22,18 @@ public class Contrato {
 
     private Contrato(UUID id, UUID clienteId, UUID freelancerId, String titulo,
                      BigDecimal valor, StatusContrato status, Instant criadoEm) {
-        this.id = id; this.clienteId = clienteId; this.freelancerId = freelancerId;
-        this.titulo = titulo; this.valor = valor; this.status = status; this.criadoEm = criadoEm;
+        this.id = id;
+        this.clienteId = clienteId;
+        this.freelancerId = freelancerId;
+        this.titulo = titulo;
+        this.valor = valor;
+        this.status = status;
+        this.criadoEm = criadoEm;
     }
 
     public static Contrato criar(UUID clienteId, UUID freelancerId, String titulo, BigDecimal valor) {
-        if (clienteId == null || freelancerId == null) throw new IllegalArgumentException("Cliente e freelancer são obrigatórios");
+        if (clienteId == null || freelancerId == null)
+            throw new IllegalArgumentException("Cliente e freelancer são obrigatórios");
         if (titulo == null || titulo.isBlank()) throw new IllegalArgumentException("Título é obrigatório");
         if (valor == null || valor.signum() <= 0) throw new IllegalArgumentException("Valor deve ser positivo");
         var contrato = new Contrato(UUID.randomUUID(), clienteId, freelancerId, titulo.trim(), valor,
@@ -44,19 +51,54 @@ public class Contrato {
         if (status != StatusContrato.ATIVO) throw new IllegalStateException("Somente contratos ativos recebem entrega");
         status = StatusContrato.ENTREGA_REGISTRADA;
     }
+
     public void concluir() {
-        if (status != StatusContrato.ENTREGA_REGISTRADA) throw new IllegalStateException("A entrega precisa estar registrada");
+        if (status != StatusContrato.ENTREGA_REGISTRADA)
+            throw new IllegalStateException("A entrega precisa estar registrada");
         status = StatusContrato.CONCLUIDO;
     }
+
     public void cancelar() {
-        if (status == StatusContrato.CONCLUIDO) throw new IllegalStateException("Contrato concluído não pode ser cancelado");
+        if (status == StatusContrato.CONCLUIDO)
+            throw new IllegalStateException("Contrato concluído não pode ser cancelado");
         status = StatusContrato.CANCELADO;
     }
+
     public List<DomainEvent> pullDomainEvents() {
-        var copy = List.copyOf(domainEvents); domainEvents.clear(); return copy;
+        var copy = List.copyOf(domainEvents);
+        domainEvents.clear();
+        return copy;
     }
-    public List<DomainEvent> domainEvents() { return Collections.unmodifiableList(domainEvents); }
-    public UUID id(){return id;} public UUID clienteId(){return clienteId;} public UUID freelancerId(){return freelancerId;}
-    public String titulo(){return titulo;} public BigDecimal valor(){return valor;} public StatusContrato status(){return status;}
-    public Instant criadoEm(){return criadoEm;}
+
+    public List<DomainEvent> domainEvents() {
+        return Collections.unmodifiableList(domainEvents);
+    }
+
+    public UUID id() {
+        return id;
+    }
+
+    public UUID clienteId() {
+        return clienteId;
+    }
+
+    public UUID freelancerId() {
+        return freelancerId;
+    }
+
+    public String titulo() {
+        return titulo;
+    }
+
+    public BigDecimal valor() {
+        return valor;
+    }
+
+    public StatusContrato status() {
+        return status;
+    }
+
+    public Instant criadoEm() {
+        return criadoEm;
+    }
 }

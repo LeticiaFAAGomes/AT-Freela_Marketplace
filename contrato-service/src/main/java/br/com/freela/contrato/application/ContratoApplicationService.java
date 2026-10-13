@@ -16,7 +16,9 @@ public class ContratoApplicationService {
     private static final Logger log = LoggerFactory.getLogger(ContratoApplicationService.class);
     private final ContratoRepository repository;
 
-    public ContratoApplicationService(ContratoRepository repository) { this.repository = repository; }
+    public ContratoApplicationService(ContratoRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional
     public Contrato criar(CriarContratoCommand cmd) {

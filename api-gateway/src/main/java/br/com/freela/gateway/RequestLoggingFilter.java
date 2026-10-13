@@ -33,5 +33,8 @@ public class RequestLoggingFilter implements GlobalFilter, Ordered {
                         exchange.getResponse().getStatusCode(), System.currentTimeMillis() - inicio, signal));
     }
 
-    @Override public int getOrder() { return -100; }
+    @Override
+    public int getOrder() {
+        return -100;
+    }
 }
