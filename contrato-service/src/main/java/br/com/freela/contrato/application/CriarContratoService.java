@@ -1,6 +1,6 @@
 package br.com.freela.contrato.application;
 
-import br.com.freela.contrato.domain.model.Contrato;
+import br.com.freela.contrato.domain.model.*;
 import br.com.freela.contrato.domain.repository.ContratoRepository;
 import br.com.freela.contrato.domain.shared.DomainEvent;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ public class CriarContratoService {
     public Contrato criar(CriarContratoCommand cmd) {
         log.info("contrato.criacao.inicio clienteId={} freelancerId={} titulo={} valor={}",
                 cmd.clienteId(), cmd.freelancerId(), cmd.titulo(), cmd.valor());
-        Contrato contrato = Contrato.criar(cmd.clienteId(), cmd.freelancerId(), cmd.titulo(), cmd.valor());
+        Contrato contrato = Contrato.criar(ClienteId.de(cmd.clienteId()), FreelancerId.de(cmd.freelancerId()), new Titulo(cmd.titulo()), ValorMonetario.de(cmd.valor()));
         log.info("contrato.dominio.criado contratoId={} status={} domainEvents={}",
                 contrato.id(), contrato.status(), contrato.domainEvents().size());
         Contrato salvo = repository.salvar(contrato);

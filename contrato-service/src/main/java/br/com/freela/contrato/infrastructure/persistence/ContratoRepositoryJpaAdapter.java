@@ -1,6 +1,6 @@
 package br.com.freela.contrato.infrastructure.persistence;
 
-import br.com.freela.contrato.domain.model.Contrato;
+import br.com.freela.contrato.domain.model.*;
 import br.com.freela.contrato.domain.repository.ContratoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class ContratoRepositoryJpaAdapter implements ContratoRepository {
     @Override
     public Contrato salvar(Contrato c) {
         log.info("contrato.persistence.save.inicio contratoId={} status={}", c.id(), c.status());
-        var entity = new ContratoJpaEntity(c.id(), c.clienteId(), c.freelancerId(), c.titulo(), c.valor(), c.status(), c.criadoEm());
+        var entity = new ContratoJpaEntity(c.id().id(), c.clienteId().id(), c.freelancerId().id(), c.titulo().titulo(), c.valor().valor(), c.status(), c.criadoEm());
         var saved = jpa.save(entity);
         log.info("contrato.persistence.save.sucesso contratoId={} status={}", saved.getId(), saved.getStatus());
         return toDomain(saved);
@@ -41,6 +41,13 @@ public class ContratoRepositoryJpaAdapter implements ContratoRepository {
     }
 
     private Contrato toDomain(ContratoJpaEntity e) {
-        return Contrato.restaurar(e.getId(), e.getClienteId(), e.getFreelancerId(), e.getTitulo(), e.getValor(), e.getStatus(), e.getCriadoEm());
+        return Contrato.restaurar(
+                ContratoId.de(e.getId()),
+            ClienteId.de(e.getClienteId()),
+            FreelancerId.de(e.getFreelancerId()),
+            new Titulo(e.getTitulo()),
+            ValorMonetario.de(e.getValor()),
+            e.getStatus(),
+            e.getCriadoEm());
     }
 }

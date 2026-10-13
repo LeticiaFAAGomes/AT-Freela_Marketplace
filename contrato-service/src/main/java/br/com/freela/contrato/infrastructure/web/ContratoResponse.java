@@ -11,11 +11,11 @@ public record ContratoResponse(UUID id, UUID clienteId, UUID freelancerId, Strin
                                StatusContrato status, Instant criadoEm) {
     static ContratoResponse from(Contrato c) {
         return new ContratoResponse(
-                c.id(),
-                c.clienteId(),
-                c.freelancerId(),
-                c.titulo(),
-                c.valor(),
+                c.id().id(),
+                c.clienteId().id(),
+                c.freelancerId().id(),
+                c.titulo().titulo(),
+                c.valor().valor(),
                 c.status(),
                 c.criadoEm()
         );

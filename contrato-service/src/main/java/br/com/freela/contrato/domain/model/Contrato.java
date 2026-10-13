@@ -13,28 +13,24 @@ import java.util.UUID;
 
 @AllArgsConstructor
 public class Contrato {
-    private final UUID id;
-    private final UUID clienteId;
-    private final UUID freelancerId;
-    private final String titulo;
-    private final BigDecimal valor;
+    private final ContratoId id;
+    private final ClienteId clienteId;
+    private final FreelancerId freelancerId;
+    private final Titulo titulo;
+    private final ValorMonetario valor;
     private StatusContrato status;
     private final Instant criadoEm;
     private final List<DomainEvent> domainEvents = new ArrayList<>();
 
-    public static Contrato criar(UUID clienteId, UUID freelancerId, String titulo, BigDecimal valor) {
-        if (clienteId == null || freelancerId == null)
-            throw new IllegalArgumentException("Cliente e freelancer são obrigatórios");
-        if (titulo == null || titulo.isBlank()) throw new IllegalArgumentException("Título é obrigatório");
-        if (valor == null || valor.signum() <= 0) throw new IllegalArgumentException("Valor deve ser positivo");
-        var contrato = new Contrato(UUID.randomUUID(), clienteId, freelancerId, titulo.trim(), valor,
+    public static Contrato criar(ClienteId clienteId, FreelancerId freelancerId, Titulo titulo, ValorMonetario valor) {
+        var contrato = new Contrato(ContratoId.de(UUID.randomUUID()), clienteId, freelancerId, titulo, valor,
                 StatusContrato.ATIVO, Instant.now());
         contrato.domainEvents.add(ContratoCriado.novo(contrato));
         return contrato;
     }
 
-    public static Contrato restaurar(UUID id, UUID clienteId, UUID freelancerId, String titulo,
-                                     BigDecimal valor, StatusContrato status, Instant criadoEm) {
+    public static Contrato restaurar(ContratoId id, ClienteId clienteId, FreelancerId freelancerId, Titulo titulo,
+                                     ValorMonetario valor, StatusContrato status, Instant criadoEm) {
         return new Contrato(id, clienteId, freelancerId, titulo, valor, status, criadoEm);
     }
 
@@ -65,23 +61,23 @@ public class Contrato {
         return Collections.unmodifiableList(domainEvents);
     }
 
-    public UUID id() {
+    public ContratoId id() {
         return id;
     }
 
-    public UUID clienteId() {
+    public ClienteId clienteId() {
         return clienteId;
     }
 
-    public UUID freelancerId() {
+    public FreelancerId freelancerId() {
         return freelancerId;
     }
 
-    public String titulo() {
+    public Titulo titulo() {
         return titulo;
     }
 
-    public BigDecimal valor() {
+    public ValorMonetario valor() {
         return valor;
     }
 
