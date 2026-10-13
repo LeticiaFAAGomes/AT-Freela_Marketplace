@@ -2,6 +2,7 @@ package br.com.freela.contrato.infrastructure.persistence;
 
 import br.com.freela.contrato.domain.model.StatusContrato;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "contratos")
+@Getter
 public class ContratoJpaEntity {
     @Id
     private UUID id;
@@ -37,33 +39,5 @@ public class ContratoJpaEntity {
         this.valor = valor;
         this.status = status;
         this.criadoEm = criadoEm;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getClienteId() {
-        return clienteId;
-    }
-
-    public UUID getFreelancerId() {
-        return freelancerId;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public BigDecimal getValor() {
-        return valor;
-    }
-
-    public StatusContrato getStatus() {
-        return status;
-    }
-
-    public Instant getCriadoEm() {
-        return criadoEm;
     }
 }

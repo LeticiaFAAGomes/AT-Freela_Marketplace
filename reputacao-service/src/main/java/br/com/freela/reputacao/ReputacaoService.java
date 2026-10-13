@@ -1,6 +1,7 @@
 package br.com.freela.reputacao;
 
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,11 +11,9 @@ import java.util.UUID;
 @Service
 public class ReputacaoService {
     private static final Logger log = LoggerFactory.getLogger(ReputacaoService.class);
-    private final ReputacaoRepository repository;
 
-    public ReputacaoService(ReputacaoRepository r) {
-        this.repository = r;
-    }
+    @Autowired
+    private ReputacaoRepository repository;
 
     @Transactional
     public void registrarContratoConcluido(UUID contratoId, UUID freelancerId, BigDecimal valor) {

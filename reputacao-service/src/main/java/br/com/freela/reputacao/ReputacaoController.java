@@ -1,6 +1,7 @@
 package br.com.freela.reputacao;
 
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -9,11 +10,9 @@ import java.util.*;
 @RequestMapping("/api/reputacoes")
 public class ReputacaoController {
     private static final Logger log = LoggerFactory.getLogger(ReputacaoController.class);
-    private final ReputacaoRepository repository;
 
-    ReputacaoController(ReputacaoRepository r) {
-        this.repository = r;
-    }
+    @Autowired
+    private ReputacaoRepository repository;
 
     @GetMapping
     public List<ReputacaoFreelancer> listar(

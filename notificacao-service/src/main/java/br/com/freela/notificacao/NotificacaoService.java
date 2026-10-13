@@ -1,6 +1,7 @@
 package br.com.freela.notificacao;
 
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,11 +10,9 @@ import java.util.UUID;
 @Service
 public class NotificacaoService {
     private static final Logger log = LoggerFactory.getLogger(NotificacaoService.class);
-    private final NotificacaoRepository repository;
 
-    public NotificacaoService(NotificacaoRepository r) {
-        this.repository = r;
-    }
+    @Autowired
+    private NotificacaoRepository repository;
 
     @Transactional
     public void registrar(UUID contratoId, UUID destinatarioId, String tipo, String mensagem) {

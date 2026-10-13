@@ -5,20 +5,17 @@ import br.com.freela.contrato.domain.repository.ContratoRepository;
 import br.com.freela.contrato.domain.shared.DomainEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.UUID;
-
 @Service
-public class ContratoApplicationService {
-    private static final Logger log = LoggerFactory.getLogger(ContratoApplicationService.class);
-    private final ContratoRepository repository;
+public class CriarContratoService {
 
-    public ContratoApplicationService(ContratoRepository repository) {
-        this.repository = repository;
-    }
+    private static final Logger log = LoggerFactory.getLogger(CriarContratoService.class);
+
+    @Autowired
+    private ContratoRepository repository;
 
     @Transactional
     public Contrato criar(CriarContratoCommand cmd) {
@@ -40,21 +37,5 @@ public class ContratoApplicationService {
         log.info("contrato.criacao.sucesso contratoId={} clienteId={} freelancerId={} status={}",
                 salvo.id(), salvo.clienteId(), salvo.freelancerId(), salvo.status());
         return salvo;
-    }
-
-    @Transactional(readOnly = true)
-    public Contrato buscar(UUID id) {
-        log.info("contrato.busca.inicio contratoId={}", id);
-        var contrato = repository.buscarPorId(id).orElseThrow(() -> new IllegalArgumentException("Contrato não encontrado: " + id));
-        log.info("contrato.busca.sucesso contratoId={} status={}", id, contrato.status());
-        return contrato;
-    }
-
-    @Transactional(readOnly = true)
-    public List<Contrato> listar() {
-        log.info("contrato.listagem.inicio");
-        var contratos = repository.listar();
-        log.info("contrato.listagem.sucesso quantidade={}", contratos.size());
-        return contratos;
     }
 }

@@ -1,6 +1,7 @@
 package br.com.freela.notificacao;
 
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -10,11 +11,9 @@ import java.util.*;
 public class NotificacaoController {
 
     private static final Logger log = LoggerFactory.getLogger(NotificacaoController.class);
-    private final NotificacaoRepository repository;
 
-    NotificacaoController(NotificacaoRepository r) {
-        this.repository = r;
-    }
+    @Autowired
+    private NotificacaoRepository repository;
 
     @GetMapping
     public List<Notificacao> listar(

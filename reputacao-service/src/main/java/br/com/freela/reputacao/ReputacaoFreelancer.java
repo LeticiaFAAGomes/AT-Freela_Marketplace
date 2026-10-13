@@ -1,6 +1,7 @@
 package br.com.freela.reputacao;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.UUID;

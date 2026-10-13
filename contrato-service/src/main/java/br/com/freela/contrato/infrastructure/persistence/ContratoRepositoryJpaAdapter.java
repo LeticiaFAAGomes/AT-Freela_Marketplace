@@ -4,6 +4,7 @@ import br.com.freela.contrato.domain.model.Contrato;
 import br.com.freela.contrato.domain.repository.ContratoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,12 +13,11 @@ import java.util.UUID;
 
 @Repository
 public class ContratoRepositoryJpaAdapter implements ContratoRepository {
-    private static final Logger log = LoggerFactory.getLogger(ContratoRepositoryJpaAdapter.class);
-    private final SpringDataContratoRepository jpa;
 
-    public ContratoRepositoryJpaAdapter(SpringDataContratoRepository jpa) {
-        this.jpa = jpa;
-    }
+    private static final Logger log = LoggerFactory.getLogger(ContratoRepositoryJpaAdapter.class);
+
+    @Autowired
+    private SpringDataContratoRepository jpa;
 
     @Override
     public Contrato salvar(Contrato c) {

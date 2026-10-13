@@ -1,6 +1,7 @@
 package br.com.freela.auditoria;
 
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -9,11 +10,9 @@ import java.util.*;
 @RequestMapping("/api/auditoria")
 public class AuditoriaController {
     private static final Logger log = LoggerFactory.getLogger(AuditoriaController.class);
-    private final EventoAuditoriaRepository repository;
 
-    AuditoriaController(EventoAuditoriaRepository r) {
-        this.repository = r;
-    }
+    @Autowired
+    private EventoAuditoriaRepository repository;
 
     @GetMapping
     public List<EventoAuditoria> listar(@RequestHeader(value = "X-Correlation-Id", required = false) String correlationId) {

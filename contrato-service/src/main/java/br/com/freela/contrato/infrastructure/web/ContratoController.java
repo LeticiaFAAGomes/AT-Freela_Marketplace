@@ -1,10 +1,12 @@
 package br.com.freela.contrato.infrastructure.web;
 
-import br.com.freela.contrato.application.ContratoApplicationService;
+import br.com.freela.contrato.application.CriarContratoService;
+import br.com.freela.contrato.application.ListarContratoService;
 import br.com.freela.contrato.application.CriarContratoCommand;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,11 +17,9 @@ import java.util.UUID;
 @RequestMapping("/api/contratos")
 public class ContratoController {
     private static final Logger log = LoggerFactory.getLogger(ContratoController.class);
-    private final ContratoApplicationService service;
 
-    public ContratoController(ContratoApplicationService service) {
-        this.service = service;
-    }
+    @Autowired
+    private CriarContratoService service;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -31,15 +31,4 @@ public class ContratoController {
         return ContratoResponse.from(c);
     }
 
-    @GetMapping("/{id}")
-    public ContratoResponse buscar(@RequestHeader(value = "X-Correlation-Id", required = false) String correlationId, @PathVariable UUID id) {
-        log.info("http.contrato.buscar correlationId={} contratoId={}", correlationId, id);
-        return ContratoResponse.from(service.buscar(id));
-    }
-
-    @GetMapping
-    public List<ContratoResponse> listar(@RequestHeader(value = "X-Correlation-Id", required = false) String correlationId) {
-        log.info("http.contrato.listar correlationId={}", correlationId);
-        return service.listar().stream().map(ContratoResponse::from).toList();
-    }
 }
