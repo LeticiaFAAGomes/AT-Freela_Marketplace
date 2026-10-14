@@ -6,6 +6,7 @@ import br.com.freela.contrato.domain.shared.DomainEvent;
 import br.com.freela.contrato.domain.shared.DomainEventPublisher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,6 @@ import java.util.UUID;
 @Component
 public class OutboxDomainEventPublisher implements DomainEventPublisher {
 
-   @Autowired
     private OutboxRepository outboxRepository;
 
     @Autowired
@@ -25,7 +25,6 @@ public class OutboxDomainEventPublisher implements DomainEventPublisher {
     public void publicar(List<DomainEvent> eventos) {
         for (DomainEvent evento : eventos) {
             try {
-                String payload = objectMapper.writeValueAsString(evento);
                 UUID contratoId;
 
                 if (evento instanceof ContratoCriado criado) {
@@ -38,11 +37,14 @@ public class OutboxDomainEventPublisher implements DomainEventPublisher {
                     );
                 }
 
+                ObjectNode payload = objectMapper.valueToTree(evento);
+                payload.put("eventType", evento.eventType());
+
                 outboxRepository.save(new OutboxEvent(
                         evento.eventId(),
                         contratoId,
                         evento.eventType(),
-                        payload,
+                        objectMapper.writeValueAsString(payload),
                         evento.occurredAt()
                 ));
 

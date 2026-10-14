@@ -10,6 +10,7 @@ import java.util.UUID;
 class EventoAuditoria {
     @Id
     UUID id;
+    @Column(unique = true, nullable = false)
     UUID eventId;
     UUID aggregateId;
     String eventType;
