@@ -2,6 +2,7 @@ package br.com.freela.contrato.domain.model;
 
 import br.com.freela.contrato.domain.event.ContratoConcluido;
 import br.com.freela.contrato.domain.event.ContratoCriado;
+import br.com.freela.contrato.domain.event.EntregaRegistrada;
 import br.com.freela.contrato.domain.shared.DomainEvent;
 
 import java.time.Instant;
@@ -53,6 +54,7 @@ public class Contrato {
     public void registrarEntrega() {
         if (status != StatusContrato.ATIVO) throw new IllegalStateException("Somente contratos ativos recebem entrega");
         status = StatusContrato.ENTREGA_REGISTRADA;
+        domainEvents.add(EntregaRegistrada.novo(this));
     }
 
 public void concluir() {

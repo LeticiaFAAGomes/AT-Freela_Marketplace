@@ -7,6 +7,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "auditoria_eventos")
+@com.fasterxml.jackson.annotation.JsonAutoDetect(
+        fieldVisibility = com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY)
 class EventoAuditoria {
     @Id
     UUID id;
@@ -21,7 +23,6 @@ class EventoAuditoria {
 
     protected EventoAuditoria() {
     }
-
     EventoAuditoria(UUID eventId, UUID aggregateId, String eventType, String correlationId, String payload) {
         this.id = UUID.randomUUID();
         this.eventId = eventId;

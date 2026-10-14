@@ -2,154 +2,149 @@
 
 ### Marketplace de Freelancers com Spring Boot, Spring Cloud, Domain-Driven Design e Comunicação Assíncrona
 
-[![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-Microservices-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud)
-[![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-4-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)](https://kafka.apache.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apache-maven&logoColor=white)](https://maven.apache.org/)
+![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Microsserviços-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-Eventos-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 
-O **Freela Marketplace** é um sistema de contratação de freelancers desenvolvido com arquitetura de microsserviços utilizando Java, Spring Boot e Spring Cloud. A aplicação gerencia o ciclo de vida dos contratos e utiliza **Apache Kafka para comunicação assíncrona baseada em eventos**, integrando os serviços de notificações, reputação e auditoria.
+O **Freela Marketplace** é uma aplicação distribuída para gerenciamento de contratos entre clientes e freelancers. Desenvolvido com Java, Spring Boot e Spring Cloud, o projeto utiliza arquitetura de microsserviços e Apache Kafka para comunicação assíncrona baseada em eventos.
 
-O projeto aplica conceitos de **Domain-Driven Design (DDD), Transactional Outbox, idempotência, processamento assíncrono, tolerância a falhas e rastreabilidade**, buscando garantir maior confiabilidade na comunicação entre os serviços.
-
----
+A solução aplica conceitos de **Domain-Driven Design (DDD), Transactional Outbox, idempotência, particionamento por chave, tolerância a falhas, auditoria e rastreamento distribuído**, buscando garantir maior confiabilidade e desacoplamento entre os serviços.
 
 ## 📌 Objetivos
 
-- Desenvolver uma aplicação distribuída utilizando arquitetura de microsserviços.
+- Desenvolver uma aplicação distribuída com arquitetura de microsserviços.
 - Separar as responsabilidades de contratos, notificações, reputação e auditoria.
 - Implementar o ciclo de vida dos contratos com regras de domínio.
 - Aplicar conceitos de Domain-Driven Design (DDD).
 - Implementar comunicação assíncrona com Apache Kafka.
-- Publicar eventos de domínio utilizando o padrão Transactional Outbox.
-- Garantir a identificação dos eventos por meio de identificadores únicos.
-- Implementar idempotência no processamento de eventos.
-- Utilizar o identificador do contrato como chave de particionamento para preservar a ordem dos eventos relacionados.
-- Implementar tratamento de falhas com tentativas de reprocessamento e Dead Letter Topic.
-- Registrar eventos relevantes para auditoria.
-- Atualizar informações agregadas de reputação dos freelancers.
+- Utilizar o padrão Transactional Outbox para publicação confiável de eventos.
+- Identificar eventos por meio de UUIDs únicos.
+- Utilizar o identificador do contrato como chave de particionamento.
+- Implementar idempotência nos consumidores.
+- Configurar tentativas de reprocessamento e Dead Letter Topic (DLT).
+- Registrar eventos para auditoria e rastreabilidade.
+- Atualizar informações agregadas sobre os freelancers.
 - Utilizar Eureka para registro e descoberta de serviços.
 - Centralizar o acesso HTTP por meio do API Gateway.
+- Utilizar PostgreSQL com bancos separados por microsserviço.
+- Aplicar logs estruturados, correlação de requisições e tracing distribuído.
 - Executar a infraestrutura local com Docker Compose.
-- Trabalhar com logs estruturados e recursos de observabilidade.
 
----
+## 💼 Sobre o Sistema
 
-# 💼 Sobre o Sistema
-
-O marketplace representa um cenário em que clientes contratam freelancers para executar trabalhos. O `contrato-service` gerencia os contratos e publica eventos que são consumidos pelos demais serviços.
+O marketplace representa um cenário no qual clientes contratam freelancers para executar trabalhos. O `contrato-service` gerencia os contratos e publica eventos de domínio que são consumidos pelos demais serviços.
 
 O sistema é composto por seis aplicações Spring Boot:
 
-- **eureka-server** — registro e descoberta dos microsserviços.
-- **api-gateway** — ponto de entrada HTTP e roteamento para os serviços.
-- **contrato-service** — gerenciamento do ciclo de vida dos contratos e publicação de eventos.
-- **notificacao-service** — processamento e armazenamento de notificações.
-- **reputacao-service** — atualização das informações agregadas dos freelancers.
-- **auditoria-service** — registro dos eventos relevantes do sistema.
+| Aplicação | Responsabilidade |
+|---|---|
+| `eureka-server` | Registro e descoberta dos microsserviços |
+| `api-gateway` | Entrada HTTP e roteamento das requisições |
+| `contrato-service` | Gerenciamento dos contratos e publicação de eventos |
+| `notificacao-service` | Processamento e persistência de notificações |
+| `reputacao-service` | Agregação dos contratos concluídos por freelancer |
+| `auditoria-service` | Registro e consulta dos eventos processados |
 
-A comunicação entre os serviços consumidores e o serviço de contratos ocorre de forma assíncrona por meio do Kafka, reduzindo o acoplamento direto entre os componentes.
-
----
+A comunicação entre o produtor e os consumidores ocorre por meio do Kafka. Dessa forma, o processamento de notificações, reputação e auditoria não precisa ocorrer por chamadas HTTP síncronas ao serviço de contratos.
 
 ## 🏛️ Arquitetura
 
 ```text
-                         ┌──────────────────────┐
-                         │        CLIENTE       │
-                         │       REST / HTTP    │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │      API GATEWAY     │
-                         │        :8080         │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │    CONTRATO-SERVICE  │
-                         │        :8081         │
-                         │                      │
-                         │ DDD + Transactional   │
-                         │       Outbox         │
-                         └──────────┬───────────┘
-                                    │
-                                    │ Publicação
-                                    ▼
-                         ┌──────────────────────┐
-                         │     APACHE KAFKA     │
-                         │        :9092         │
-                         │                      │
-                         │   contrato.eventos   │
-                         └──────────┬───────────┘
-                                    │
-                  ┌─────────────────┼─────────────────┐
-                  │                 │                 │
-                  ▼                 ▼                 ▼
-       ┌──────────────────┐ ┌────────────────┐ ┌────────────────┐
-       │ NOTIFICACAO-     │ │ REPUTACAO-     │ │ AUDITORIA-     │
-       │ SERVICE          │ │ SERVICE        │ │ SERVICE        │
-       │ :8082            │ │ :8083          │ │ :8084          │
-       └────────┬─────────┘ └───────┬────────┘ └───────┬────────┘
-                │                   │                  │
-                ▼                   ▼                  ▼
-       ┌──────────────────┐ ┌────────────────┐ ┌────────────────┐
-       │ notificacao_db   │ │ reputacao_db   │ │ auditoria_db   │
-       └──────────────────┘ └────────────────┘ └────────────────┘
+                        CLIENTE
+                           |
+                           | REST / HTTP
+                           v
+                    API GATEWAY :8080
+                           |
+                           v
+                   CONTRATO-SERVICE :8081
+                           |
+                    Transação de domínio
+                           |
+                 +---------+---------+
+                 |                   |
+                 v                   v
+             Contrato           Outbox Events
+                                     |
+                                     v
+                              OutboxPublisher
+                                     |
+                                     v
+                            APACHE KAFKA :9092
+                              contrato.eventos
+                                     |
+                   +-----------------+-----------------+
+                   |                 |                 |
+                   v                 v                 v
+           NOTIFICACAO-SERVICE  REPUTACAO-SERVICE  AUDITORIA-SERVICE
+                :8082               :8083              :8084
+                   |                 |                 |
+                   v                 v                 v
+             notificacao_db      reputacao_db       auditoria_db
 
-                 ┌────────────────────────────────┐
-                 │          EUREKA SERVER         │
-                 │             :8761              │
-                 └────────────────────────────────┘
+                 EUREKA SERVER :8761
+                 Descoberta de serviços
 
-                 ┌────────────────────────────────┐
-                 │           POSTGRESQL           │
-                 │             :5432              │
-                 └────────────────────────────────┘
+                 POSTGRESQL :5432
+                 Persistência relacional
+
+                 ZIPKIN :9411
+                 Rastreamento distribuído
 ```
 
-O diagrama representa a organização lógica da aplicação. O Kafka distribui os eventos para os consumidores, enquanto cada microsserviço mantém suas próprias responsabilidades e seus próprios dados.
+A arquitetura separa as responsabilidades de cada serviço e utiliza eventos para propagar mudanças do domínio. O PostgreSQL mantém bancos independentes por serviço, enquanto o Kafka transporta os eventos de domínio.
 
----
+## 🔌 Portas e Endpoints Locais
 
-## 🔌 Portas
+| Serviço ou ferramenta | Porta | Endereço |
+|---|---:|---|
+| API Gateway | 8080 | `http://localhost:8080` |
+| Contrato Service | 8081 | `http://localhost:8081` |
+| Notificação Service | 8082 | `http://localhost:8082` |
+| Reputação Service | 8083 | `http://localhost:8083` |
+| Auditoria Service | 8084 | `http://localhost:8084` |
+| Eureka Server | 8761 | `http://localhost:8761` |
+| Apache Kafka | 9092 | `localhost:9092` |
+| Kafka UI | 8090 | `http://localhost:8090` |
+| PostgreSQL | 5432 | `localhost:5432` |
+| Zipkin | 9411 | `http://localhost:9411` |
+| Grafana | 3000 | `http://localhost:3000`, se configurado |
+| Loki | 3100 | `http://localhost:3100`, se configurado |
 
-| Serviço | Porta |
-|---|---:|
-| `api-gateway` | `8080` |
-| `contrato-service` | `8081` |
-| `notificacao-service` | `8082` |
-| `reputacao-service` | `8083` |
-| `auditoria-service` | `8084` |
-| `eureka-server` | `8761` |
-| Apache Kafka | `9092` |
-| Kafka UI | `8090` |
-| PostgreSQL | `5432` |
-| Zipkin | `9411` |
+As portas correspondem ao ambiente local documentado. Os serviços de observabilidade devem estar definidos no Compose ou em outra configuração efetivamente utilizada para que seus endereços estejam disponíveis.
 
----
+## 🧩 Componentes da Aplicação
 
-# 🧩 Componentes da Aplicação
+### `eureka-server`
 
-| Componente | Responsabilidade |
-|---|---|
-| `eureka-server` | Registro e descoberta de serviços |
-| `api-gateway` | Entrada HTTP e roteamento das requisições |
-| `contrato-service` | Regras de domínio, ciclo de vida e publicação de eventos |
-| `notificacao-service` | Processamento e persistência de notificações |
-| `reputacao-service` | Agregação dos contratos concluídos por freelancer |
-| `auditoria-service` | Registro e rastreabilidade de eventos |
-| Apache Kafka | Transporte assíncrono de eventos |
-| PostgreSQL | Persistência dos dados dos microsserviços |
+Fornece o registro e a descoberta dos microsserviços, permitindo que as aplicações se registrem e sejam localizadas pelo nome.
 
----
+### `api-gateway`
 
-# 📄 contrato-service
+Centraliza o acesso HTTP, encaminha requisições para os serviços e participa da propagação do cabeçalho `X-Correlation-Id`.
 
-O `contrato-service` é o núcleo do domínio da aplicação. Ele gerencia os contratos entre clientes e freelancers, aplica as regras de negócio e registra os eventos que devem ser publicados para os outros serviços.
+### `contrato-service`
+
+Implementa as regras do domínio dos contratos, controla as transições de estado e registra os eventos na Transactional Outbox.
+
+### `notificacao-service`
+
+Consome eventos de domínio e persiste os registros de notificação no banco `notificacao_db`.
+
+### `reputacao-service`
+
+Consome eventos de contratos concluídos e atualiza os dados agregados dos freelancers, registrando os eventos processados para apoiar a idempotência.
+
+### `auditoria-service`
+
+Consome eventos do Kafka e mantém um histórico com identificadores, tipos, dados do contrato, payload e informações de correlação disponíveis.
+
+## 📄 Contrato Service
+
+O `contrato-service` é o núcleo do domínio da aplicação. Ele gerencia os contratos entre clientes e freelancers, aplica regras de negócio e produz eventos para os demais serviços.
 
 ### Responsabilidades
 
@@ -157,13 +152,13 @@ O `contrato-service` é o núcleo do domínio da aplicação. Ele gerencia os co
 - Registrar a entrega de um contrato.
 - Concluir contratos respeitando as regras de domínio.
 - Gerar eventos de domínio.
-- Persistir os eventos pendentes na Outbox.
+- Persistir eventos pendentes na Outbox.
 - Publicar os eventos no Kafka.
-- Utilizar o identificador do contrato como chave de publicação dos eventos.
+- Utilizar o identificador do contrato como chave da mensagem.
 
 ### Ciclo de vida do contrato
 
-Os estados do contrato são:
+Os estados documentados são:
 
 - `ATIVO`
 - `ENTREGA_REGISTRADA`
@@ -173,28 +168,28 @@ Os estados do contrato são:
 Fluxo principal:
 
 ```text
-       ATIVO
-         │
-         ▼
- ENTREGA_REGISTRADA
-         │
-         ▼
-     CONCLUIDO
+      ATIVO
+        |
+        v
+ENTREGA_REGISTRADA
+        |
+        v
+    CONCLUIDO
 ```
 
-Um contrato ativo também pode ser cancelado, conforme as regras de domínio implementadas.
+O cancelamento depende das regras de domínio implementadas.
 
 ### Endpoints
 
 | Método | Endpoint | Descrição |
 |---|---|---|
 | `POST` | `/api/contratos` | Cria um contrato |
-| `GET` | `/api/contratos` | Lista os contratos |
+| `GET` | `/api/contratos` | Lista contratos |
 | `GET` | `/api/contratos/{id}` | Consulta um contrato |
 | `PUT` | `/api/contratos/{id}/entrega` | Registra a entrega |
 | `PUT` | `/api/contratos/{id}/concluir` | Conclui um contrato |
 
-### Exemplo de criação
+### Exemplo de criação de contrato
 
 ```json
 {
@@ -205,13 +200,13 @@ Um contrato ativo também pode ser cancelado, conforme as regras de domínio imp
 }
 ```
 
-Os identificadores são exemplos ilustrativos. O formato exato da resposta depende da implementação do endpoint.
+Os identificadores são exemplos ilustrativos.
 
----
+## 🏛️ Domain-Driven Design (DDD)
 
-# 🏛️ Domain-Driven Design (DDD)
+O `contrato-service` utiliza uma organização inspirada em Domain-Driven Design, separando regras de negócio, casos de uso e detalhes de infraestrutura.
 
-O `contrato-service` utiliza uma organização inspirada em Domain-Driven Design, separando o domínio, os casos de uso e os detalhes de infraestrutura.
+Estrutura conceitual:
 
 ```text
 contrato-service/
@@ -229,8 +224,8 @@ contrato-service/
 
 ### Conceitos aplicados
 
-- **Domínio:** concentra as regras de negócio e os estados válidos do contrato.
-- **Aggregate:** o agregado `Contrato` controla as transições de estado.
+- **Domínio:** concentra regras de negócio e estados válidos.
+- **Aggregate:** o agregado `Contrato` controla as transições do contrato.
 - **Domain Events:** representam acontecimentos relevantes no domínio.
 - **Application Services:** coordenam os casos de uso.
 - **Repository:** abstrai o acesso aos dados.
@@ -238,72 +233,83 @@ contrato-service/
 
 ### Eventos de domínio
 
-Entre os eventos utilizados estão:
+Os principais eventos do ciclo de vida são:
 
 - `ContratoCriado`
+- `EntregaRegistrada`
 - `ContratoConcluido`
 
-Esses eventos representam acontecimentos do ciclo de vida do contrato e são utilizados para comunicar mudanças aos demais microsserviços.
+Esses eventos representam mudanças relevantes e permitem que os consumidores reajam de forma assíncrona.
 
----
+## 🔄 Comunicação Assíncrona com Apache Kafka
 
-# 🔄 Comunicação Assíncrona com Apache Kafka
+O Kafka distribui eventos entre os serviços consumidores sem exigir chamadas HTTP diretas para cada processamento.
 
-O Apache Kafka é utilizado para distribuir eventos entre os microsserviços sem exigir chamadas HTTP diretas entre o produtor e os consumidores para cada processamento.
+### Tópicos
 
-O tópico principal é:
+| Tópico | Finalidade |
+|---|---|
+| `contrato.eventos` | Transporte dos eventos de domínio |
+| `contrato.eventos.DLT` | Destino de mensagens que esgotam as tentativas de processamento, conforme configuração do consumidor |
 
-```text
-contrato.eventos
-```
+O tópico principal está configurado no ambiente de desenvolvimento com três partições, conforme a configuração documentada do projeto.
 
-### Fluxo de publicação
-
-```text
-Contrato é criado ou concluído
-             │
-             ▼
-      Evento de domínio
-             │
-             ▼
-      Registro na Outbox
-             │
-             ▼
-       OutboxPublisher
-             │
-             ▼
-       Apache Kafka
-             │
-       ┌─────┼─────┐
-       ▼     ▼     ▼
-  Notificação Reputação Auditoria
-```
-
-O `OutboxPublisher` busca eventos pendentes, publica cada mensagem no Kafka e marca o evento como publicado após a confirmação do envio.
+Cada serviço consumidor utiliza seu próprio `group.id`, para que notificações, reputação e auditoria recebam independentemente os eventos relevantes.
 
 ### Chave de particionamento
 
-A publicação utiliza o identificador do contrato (`aggregateId`) como chave da mensagem.
+A chave da mensagem é o identificador do contrato (`contratoId` ou `aggregateId`).
 
-Isso permite que eventos do mesmo contrato sejam encaminhados à mesma partição do tópico, quando a configuração do tópico e do produtor mantém a mesma estratégia de particionamento.
+Isso permite encaminhar eventos de um mesmo contrato à mesma partição quando a chave e a estratégia de particionamento permanecem consistentes. A ordem de leitura é preservada dentro de uma partição, mas a ordem global entre partições distintas não é garantida.
 
----
+### Especificação dos eventos
 
-# 📤 Transactional Outbox
+Os eventos compartilham identificadores e metadados para facilitar o processamento e a rastreabilidade.
 
-O padrão **Transactional Outbox** é utilizado para persistir os eventos que precisam ser enviados ao Kafka.
+| Campo | Descrição |
+|---|---|
+| `eventId` | Identificador único do evento |
+| `eventType` | Tipo do evento de domínio |
+| `contratoId` | Identificador do contrato relacionado |
+| `occurredAt` | Instante em que o evento ocorreu |
+| `correlationId` | Identificador de correlação, quando disponível |
 
-Em vez de depender exclusivamente de uma publicação imediata, o sistema registra o evento na tabela `outbox_events` e utiliza um publicador para enviar os registros pendentes.
+Os campos específicos dependem do tipo de evento.
+
+#### `ContratoCriado`
+
+Consumidores: `notificacao-service` e `auditoria-service`.
+
+Campos específicos esperados: `clienteId`, `freelancerId`, `titulo` e `valor`.
+
+#### `EntregaRegistrada`
+
+Consumidores: `notificacao-service` e `auditoria-service`.
+
+Contém os identificadores do contrato, cliente e freelancer, além dos metadados comuns.
+
+#### `ContratoConcluido`
+
+Consumidores: `notificacao-service`, `reputacao-service` e `auditoria-service`.
+
+Inclui o identificador do freelancer e o valor do contrato, necessários à atualização da reputação.
+
+Os formatos definitivos devem corresponder aos eventos realmente serializados pelo produtor.
+
+## 📤 Transactional Outbox
+
+O padrão Transactional Outbox reduz o risco de inconsistência entre a gravação do contrato e a publicação do evento.
 
 ### Funcionamento
 
-1. O evento é registrado na Outbox.
-2. O publicador consulta os eventos ainda não publicados.
-3. O evento é enviado ao Kafka.
-4. O envio é aguardado para verificar sua confirmação.
-5. Após a confirmação, o registro recebe o horário de publicação em `publishedAt`.
+1. O serviço executa a operação de domínio.
+2. O contrato e o evento pendente são gravados na mesma transação.
+3. O `OutboxPublisher` consulta os registros ainda não publicados.
+4. O evento é enviado ao Kafka.
+5. O produtor aguarda a confirmação do envio.
+6. Após a confirmação, o registro recebe o horário de publicação em `published_at`.
 
-A tabela utiliza informações como:
+A tabela `outbox_events` mantém informações como:
 
 - `eventId`
 - `aggregateId`
@@ -312,88 +318,102 @@ A tabela utiliza informações como:
 - `occurredAt`
 - `publishedAt`
 
-O campo `publishedAt` permanece nulo enquanto o evento estiver pendente.
+O campo `published_at` permanece nulo enquanto o evento estiver pendente.
 
-O padrão reduz o risco de perder eventos entre a persistência do estado do domínio e a publicação da mensagem. Ele não elimina sozinho todas as possibilidades de duplicação: por exemplo, uma falha após a publicação e antes da confirmação no banco pode exigir que o consumidor processe novamente a mesma mensagem.
+O padrão evita depender exclusivamente de uma publicação imediata durante a requisição HTTP. Entretanto, uma falha após o envio ao Kafka e antes da atualização da Outbox pode provocar uma nova publicação. Por isso, os consumidores também precisam tratar mensagens duplicadas.
 
----
+## 📨 Notificação Service
 
-# 📨 notificacao-service
-
-O `notificacao-service` processa eventos recebidos do Kafka e mantém os registros de notificações associados ao marketplace.
+O `notificacao-service` processa eventos recebidos do Kafka e persiste notificações no banco `notificacao_db`.
 
 ### Responsabilidades
 
-- Consumir eventos do tópico `contrato.eventos`.
-- Processar eventos relevantes para notificações.
-- Persistir os registros no banco `notificacao_db`.
+- Consumir eventos de `contrato.eventos`.
+- Processar os tipos de evento relevantes para notificações.
+- Persistir os registros de notificação.
 - Identificar eventos já processados.
-- Evitar a criação duplicada de notificações para o mesmo evento.
-- Configurar tentativas de reprocessamento e publicação em Dead Letter Topic para falhas no consumidor.
+- Evitar duplicações de registros.
+- Aplicar a configuração de tratamento de falhas do consumidor.
 
-O processamento utiliza o identificador único do evento para apoiar a idempotência.
+### Banco de dados
+
+Banco: `notificacao_db`
+
+A persistência permite consultar os registros gerados a partir dos eventos do marketplace.
 
 ### Tratamento de falhas
 
-O consumidor possui configuração de reprocessamento com intervalo entre tentativas e encaminhamento de mensagens que continuam falhando para um tópico de mensagens não processadas, utilizando o sufixo `.DLT`.
+A configuração de consumo pode incluir tentativas de reprocessamento e encaminhamento de mensagens que continuam falhando para um tópico DLT.
 
-A criação e a disponibilidade do tópico de destino precisam ser garantidas pela configuração do ambiente Kafka.
+A quantidade de tentativas, o intervalo, o tópico de destino e o comportamento após falhas devem corresponder à configuração efetiva do consumidor.
 
----
+## ⭐ Reputação Service
 
-# ⭐ reputacao-service
-
-O `reputacao-service` mantém informações agregadas sobre a atividade dos freelancers.
+O `reputacao-service` mantém informações agregadas sobre os freelancers com base nos contratos concluídos.
 
 ### Responsabilidades
 
-- Consumir eventos de contratos concluídos.
+- Consumir eventos `ContratoConcluido`.
 - Identificar o freelancer associado ao contrato.
-- Atualizar a quantidade de contratos concluídos.
-- Acumular o valor dos contratos processados.
+- Incrementar a quantidade de contratos concluídos.
+- Acumular o valor dos contratos concluídos.
 - Registrar os eventos processados para apoiar a idempotência.
 
 ### Dados agregados
 
-Para cada freelancer, o serviço mantém informações como:
+A tabela `reputacoes` mantém:
 
-- Identificador do freelancer.
-- Quantidade de contratos concluídos.
-- Valor total dos contratos concluídos.
+| Campo | Descrição |
+|---|---|
+| `freelancer_id` | Identificador do freelancer |
+| `contratos_concluidos` | Quantidade de contratos concluídos contabilizados |
+| `valor_total` | Valor acumulado dos contratos concluídos |
 
-O registro dos eventos processados permite identificar mensagens que já foram tratadas e reduzir a duplicação de atualizações.
+A tabela `eventos_processados` mantém os identificadores dos eventos já processados.
 
 ### Endpoint
 
 | Método | Endpoint | Descrição |
 |---|---|---|
-| `GET` | `/api/reputacoes` | Consulta as reputações registradas |
+| `GET` | `/api/reputacoes` | Consulta os dados agregados de reputação |
 
----
+### Verificação no PostgreSQL
 
-# 🧾 auditoria-service
+```sql
+SELECT freelancer_id, contratos_concluidos, valor_total
+FROM reputacoes;
 
-O `auditoria-service` registra eventos relevantes recebidos pelo sistema, oferecendo um histórico para análise e rastreabilidade.
+SELECT event_id
+FROM eventos_processados;
+```
+
+Essas consultas permitem verificar as atualizações persistidas e os eventos registrados pelo serviço.
+
+## 🧾 Auditoria Service
+
+O `auditoria-service` registra os eventos recebidos do Kafka, oferecendo histórico e rastreabilidade do processamento.
 
 ### Responsabilidades
 
-- Consumir eventos do Kafka.
-- Registrar o identificador do evento.
-- Armazenar o identificador do agregado relacionado.
+- Consumir eventos de domínio.
+- Registrar o identificador único do evento.
+- Armazenar o identificador do contrato relacionado.
 - Registrar o tipo do evento e o payload recebido.
-- Armazenar informações de correlação quando disponíveis.
-- Identificar eventos já registrados para evitar duplicações.
+- Persistir a correlação quando disponível.
+- Evitar duplicações de registros por evento.
 
-### Informações de auditoria
+### Dados de auditoria
 
-Os registros podem conter:
+A tabela `auditoria_eventos` armazena informações como:
 
-- `eventId`
-- `aggregateId`
-- Tipo do evento
-- `correlationId`, quando disponível
-- Payload original
-- Horário de recebimento
+| Campo | Descrição |
+|---|---|
+| `id` | Identificador do registro de auditoria |
+| `aggregate_id` | Identificador do contrato |
+| `event_id` | Identificador único do evento |
+| `event_type` | Tipo do evento |
+| `recebido_em` | Data e hora de recebimento |
+| Payload | Conteúdo original do evento, conforme entidade |
 
 ### Endpoint
 
@@ -401,106 +421,121 @@ Os registros podem conter:
 |---|---|---|
 | `GET` | `/api/auditoria` | Consulta os registros de auditoria |
 
----
+### Verificação no PostgreSQL
 
-# 🔁 Idempotência e Confiabilidade
+```sql
+SELECT id, aggregate_id, event_id, event_type, recebido_em
+FROM auditoria_eventos
+ORDER BY recebido_em DESC;
+```
 
-Em sistemas distribuídos, uma mensagem pode ser entregue mais de uma vez. Por isso, os consumidores precisam identificar eventos já processados.
+Para consultar um contrato específico:
 
-O projeto utiliza identificadores únicos de eventos e registros de processamento para reduzir os efeitos de mensagens duplicadas.
+```sql
+SELECT event_id, event_type, recebido_em
+FROM auditoria_eventos
+WHERE aggregate_id = 'ID_DO_CONTRATO'
+ORDER BY recebido_em;
+```
+
+Substitua `ID_DO_CONTRATO` pelo identificador real.
+
+## 🔁 Idempotência e Confiabilidade
+
+Em sistemas distribuídos, mensagens podem ser entregues mais de uma vez. Os consumidores devem identificar eventos já processados antes de executar operações que alteram o estado.
+
+O projeto utiliza `eventId` como identificador único para apoiar a idempotência.
 
 ### Estratégias aplicadas
 
-- Identificação única dos eventos por `eventId`.
-- Verificação de eventos já registrados antes de executar o processamento.
-- Restrições de unicidade no banco de dados para registros de eventos.
-- Registro dos eventos processados no serviço de reputação.
-- Tentativas de reprocessamento no consumidor configurado.
-- Encaminhamento de mensagens com falha persistente para Dead Letter Topic.
+- Identificação dos eventos por UUID.
+- Verificação de eventos já processados.
+- Persistência dos identificadores processados.
+- Uso de restrições de unicidade, conforme configuração do banco.
+- Registro dos eventos processados pela reputação.
+- Tratamento de falhas e tentativas de reprocessamento.
 
-A idempotência depende também da implementação transacional de cada consumidor e das restrições do banco de dados. Ela não significa que o Kafka entregue cada mensagem uma única vez.
+A idempotência precisa ser garantida pela implementação transacional e pelas restrições de banco de dados. A simples existência de um registro de evento não comprova, por si só, que todas as operações relacionadas são atômicas.
 
----
+O Kafka não garante que cada mensagem seja entregue uma única vez em todas as situações. A aplicação deve estar preparada para reentregas.
 
-# 🧭 eureka-server
+## 🔁 Tratamento de Falhas e Dead Letter Topic
 
-O `eureka-server` fornece o registro e a descoberta dos microsserviços.
+O tratamento de falhas evita que mensagens com problemas sejam descartadas silenciosamente.
 
-Os serviços se registram no Eureka para que o Gateway possa localizá-los pelo nome, reduzindo a dependência de endereços fixos.
+A configuração dos consumidores pode incluir:
 
-**Porta:** `8761`
+1. Recebimento do evento.
+2. Tentativa de processamento.
+3. Repetição em caso de erro recuperável.
+4. Encaminhamento para `contrato.eventos.DLT` após o esgotamento das tentativas.
+5. Análise posterior da mensagem e da causa da falha.
 
-Interface web:
+O projeto documenta três tentativas com intervalo de um segundo e utilização de DLT. Esses parâmetros precisam ser conferidos nas configurações efetivas dos consumidores.
 
-```text
-http://localhost:8761
-```
+A DLT permite diagnosticar mensagens que não foram processadas normalmente. O reprocessamento posterior deve considerar a causa da falha e o controle de idempotência.
 
----
+## 🆔 Correlação e Logs
 
-# 🚪 api-gateway
+O cabeçalho `X-Correlation-Id` identifica requisições relacionadas e pode ser propagado ao longo do fluxo.
 
-O `api-gateway` centraliza a entrada HTTP e encaminha as requisições aos microsserviços por meio das rotas configuradas e da descoberta de serviços.
-
-**Porta:** `8080`
-
-### Rotas principais
-
-| Caminho | Serviço |
-|---|---|
-| `/api/contratos/**` | `contrato-service` |
-| `/api/notificacoes/**` | `notificacao-service` |
-| `/api/reputacoes/**` | `reputacao-service` |
-| `/api/auditoria/**` | `auditoria-service` |
-
-As rotas e os prefixos devem corresponder à configuração efetiva do Gateway.
-
----
-
-# 🆔 Correlação e Logs
-
-O projeto utiliza o cabeçalho HTTP:
+Exemplo:
 
 ```http
 X-Correlation-Id: teste-contrato-001
 ```
 
-Esse identificador permite associar registros de log relacionados a uma mesma requisição quando é encaminhado e registrado pelos componentes envolvidos.
+O identificador pode ser incluído no evento de domínio para permitir a associação entre a requisição original e os logs dos consumidores.
 
-Os logs incluem informações como:
+### Informações úteis para os logs
 
 - Data e horário.
 - Nível de severidade.
 - Nome do serviço.
-- Thread.
-- Logger.
-- Mensagem do evento.
+- Thread e logger.
+- `correlationId`, quando disponível.
+- `eventId`, quando disponível.
+- `contratoId`, quando disponível.
+- Resultado do processamento.
 
-O payload de eventos também pode carregar informações de correlação, permitindo que os consumidores registrem o identificador quando disponível.
+Os logs não devem registrar senhas, tokens ou outros dados sensíveis.
 
-A propagação completa da correlação entre requisições HTTP e mensagens Kafka depende da inclusão desse dado no evento publicado e do tratamento realizado pelos consumidores.
+## 📈 Observabilidade com Zipkin
 
----
-
-# 📈 Observabilidade com Zipkin
-
-O projeto inclui dependências de tracing e configuração de infraestrutura para o Zipkin, com o objetivo de apoiar o rastreamento distribuído entre componentes.
-
-**Porta padrão do Zipkin:** `9411`
+O projeto inclui configuração de tracing com Micrometer Tracing e Zipkin para apoiar o acompanhamento das requisições distribuídas.
 
 Interface local:
 
-```text
-http://localhost:9411
+`http://localhost:9411`
+
+O rastreamento ajuda a analisar latência, chamadas entre componentes e falhas.
+
+Como a publicação pela Outbox ocorre de forma assíncrona, o processamento HTTP e o processamento Kafka podem aparecer em traces distintos. O `correlationId` pode ajudar a relacionar os registros.
+
+A presença do Zipkin não comprova, por si só, que todos os serviços estão enviando spans. É necessário verificar a configuração de exportação e a chegada dos traces na interface.
+
+## 📊 Logs Centralizados com Loki e Grafana
+
+Caso estejam habilitados na infraestrutura local, Loki e Grafana podem ser utilizados para centralizar e consultar logs dos serviços.
+
+Endereços usuais:
+
+- Grafana: `http://localhost:3000`
+- Loki: `http://localhost:3100`
+
+A consulta depende da configuração da fonte de dados Loki e dos rótulos efetivamente enviados pelos serviços.
+
+Exemplo de consulta LogQL, caso o rótulo `app` esteja configurado:
+
+```logql
+{app=~".+"} |= "teste-contrato-001"
 ```
 
-Para visualizar rastreamentos, é necessário que os serviços estejam configurados com o endpoint de envio de spans e que a instrumentação esteja ativa. A disponibilidade do container, por si só, não garante que os rastreamentos estejam sendo recebidos.
+A configuração real de Loki, Grafana, appenders e rótulos deve ser conferida no Compose e nos arquivos de configuração antes de considerar essa funcionalidade concluída.
 
----
+## 🐘 PostgreSQL
 
-# 🐘 PostgreSQL
-
-O PostgreSQL é utilizado como banco de dados relacional, com bancos separados por microsserviço.
+O PostgreSQL mantém bancos independentes para os microsserviços.
 
 | Banco | Serviço |
 |---|---|
@@ -518,175 +553,273 @@ O PostgreSQL é utilizado como banco de dados relacional, com bancos separados p
 | Usuário | `freela` |
 | Senha | `freela` |
 
-Esses são os valores padrão do ambiente local descrito no projeto. Em outros ambientes, utilize variáveis de ambiente e credenciais apropriadas.
+Esses valores são destinados ao ambiente local documentado. Para outros ambientes, utilize variáveis de ambiente e credenciais apropriadas.
 
-O script de inicialização dos bancos está em:
+Script de inicialização:
 
 ```text
 infra/postgres/init-databases.sql
 ```
 
----
+### Consultas úteis
 
-# 🐳 Infraestrutura com Docker Compose
+Verificar as tabelas de auditoria:
 
-Os serviços de infraestrutura estão definidos em:
+```sql
+SELECT event_id, aggregate_id, event_type, recebido_em
+FROM auditoria_eventos
+ORDER BY recebido_em DESC;
+```
+
+Verificar reputações:
+
+```sql
+SELECT freelancer_id, contratos_concluidos, valor_total
+FROM reputacoes;
+```
+
+Verificar eventos processados:
+
+```sql
+SELECT event_id
+FROM eventos_processados;
+```
+
+## 🐳 Infraestrutura com Docker Compose
+
+A infraestrutura local está definida em:
 
 ```text
 infra/docker-compose.yml
 ```
 
-A infraestrutura inclui PostgreSQL, Kafka, Kafka UI e Zipkin.
+O ambiente inclui PostgreSQL, Kafka, Kafka UI e Zipkin, conforme a configuração documentada. Outros componentes, como Loki e Grafana, dependem de estarem definidos no Compose ou configurados separadamente.
 
-### Iniciar os containers
+### Iniciar a infraestrutura
 
 Na raiz do repositório:
 
-```bash
+```powershell
 cd infra
 docker compose up -d
 ```
 
-### Verificar o estado dos containers
+### Verificar os containers
 
-```bash
+```powershell
 docker compose ps
 ```
 
-### Consultar os logs
+### Consultar logs
 
-```bash
+```powershell
 docker compose logs -f
 ```
 
-Para consultar apenas os logs do Kafka:
+Para acompanhar o Kafka:
 
-```bash
+```powershell
 docker compose logs -f kafka
 ```
 
 ### Encerrar os containers
 
-```bash
+```powershell
 docker compose down
 ```
 
 ### Remover também os volumes persistentes
 
-```bash
+```powershell
 docker compose down -v
 ```
 
 **Atenção:** o último comando remove os volumes gerenciados pelo Compose e pode apagar os dados persistidos localmente.
 
----
+## ▶️ Execução das Aplicações
 
-# ▶️ Execução das Aplicações
-
-Com a infraestrutura disponível, os microsserviços podem ser iniciados individualmente a partir da raiz do projeto.
+Com a infraestrutura disponível, inicie os serviços a partir da raiz do repositório.
 
 ### Eureka Server
 
-```bash
+```powershell
 mvn -pl eureka-server spring-boot:run
 ```
 
 ### API Gateway
 
-```bash
+```powershell
 mvn -pl api-gateway spring-boot:run
 ```
 
 ### Contrato Service
 
-```bash
+```powershell
 mvn -pl contrato-service spring-boot:run
 ```
 
 ### Notificação Service
 
-```bash
+```powershell
 mvn -pl notificacao-service spring-boot:run
 ```
 
 ### Reputação Service
 
-```bash
+```powershell
 mvn -pl reputacao-service spring-boot:run
 ```
 
 ### Auditoria Service
 
-```bash
+```powershell
 mvn -pl auditoria-service spring-boot:run
 ```
 
-Cada aplicação precisa ter suas configurações de conexão com o PostgreSQL, Eureka e Kafka compatíveis com o ambiente em que está sendo executada.
+Cada aplicação precisa ter configurações de conexão com PostgreSQL, Kafka e Eureka compatíveis com o ambiente em que está sendo executada.
 
----
+Os comandos acima pressupõem que os módulos e seus POMs estejam organizados conforme os nomes indicados.
 
-# 🧪 Teste do Fluxo de Contratos
+## 🧪 Teste do Fluxo Completo
 
-Com a infraestrutura e os serviços em execução, crie um contrato pelo Gateway:
+Com a infraestrutura e os serviços em execução, o fluxo pode ser testado por meio do API Gateway.
 
-```bash
-curl -i -X POST http://localhost:8080/api/contratos \
-  -H "Content-Type: application/json" \
-  -H "X-Correlation-Id: teste-contrato-001" \
-  -d '{
-    "clienteId": "11111111-1111-1111-1111-111111111111",
-    "freelancerId": "22222222-2222-2222-2222-222222222222",
-    "titulo": "Construção de API de pagamentos",
-    "valor": 3500.00
-  }'
+Os comandos abaixo utilizam PowerShell.
+
+### 1. Criar um contrato
+
+```powershell
+$h = @{ "X-Correlation-Id" = "demo-001" }
+
+$body = @{
+    clienteId    = "11111111-1111-1111-1111-111111111111"
+    freelancerId = "22222222-2222-2222-2222-222222222222"
+    titulo       = "Contrato de demonstração"
+    valor        = 1500.00
+} | ConvertTo-Json
+
+$c = Invoke-RestMethod `
+    -Method Post `
+    -Uri "http://localhost:8080/api/contratos" `
+    -ContentType "application/json; charset=utf-8" `
+    -Headers $h `
+    -Body ([System.Text.Encoding]::UTF8.GetBytes($body))
+
+$c
 ```
 
-Consulte os contratos:
+Guarde o identificador retornado no campo `id`.
 
-```bash
-curl http://localhost:8080/api/contratos
+### 2. Registrar a entrega
+
+```powershell
+$id = $c.id
+
+Invoke-RestMethod `
+    -Method Put `
+    -Uri "http://localhost:8080/api/contratos/$id/entrega" `
+    -Headers $h
 ```
 
-Depois de obter o identificador retornado pela API, registre a entrega:
+### 3. Concluir o contrato
 
-```bash
-curl -i -X PUT \
-  http://localhost:8080/api/contratos/ID_DO_CONTRATO/entrega
+```powershell
+Invoke-RestMethod `
+    -Method Put `
+    -Uri "http://localhost:8080/api/contratos/$id/concluir" `
+    -Headers $h
 ```
 
-Conclua o contrato:
+### 4. Consultar a auditoria
 
-```bash
-curl -i -X PUT \
-  http://localhost:8080/api/contratos/ID_DO_CONTRATO/concluir
+```powershell
+Invoke-RestMethod `
+    -Uri "http://localhost:8080/api/auditoria" |
+    ConvertTo-Json -Depth 10
 ```
 
-Substitua `ID_DO_CONTRATO` pelo identificador real do contrato.
+A auditoria também pode ser verificada diretamente no PostgreSQL:
 
-Após a conclusão, verifique os logs do `contrato-service` e dos consumidores. Com o Kafka e os serviços operacionais, o evento de conclusão pode ser processado pelos serviços interessados.
+```powershell
+docker exec -it freela-postgres psql -U freela -d auditoria_db -c "SELECT event_id, aggregate_id, event_type, recebido_em FROM auditoria_eventos WHERE aggregate_id = '$id' ORDER BY recebido_em;"
+```
 
----
+O fluxo esperado é a persistência dos eventos `ContratoCriado`, `EntregaRegistrada` e `ContratoConcluido`.
 
-# 🛠️ Tecnologias
+### 5. Consultar a reputação
 
-- **Java 21**
-- **Spring Boot**
-- **Spring Cloud**
-- **Spring Cloud Gateway**
-- **Netflix Eureka**
-- **Spring Data JPA**
-- **PostgreSQL 16**
-- **Apache Kafka 4**
-- **Kafka UI**
-- **Docker**
-- **Docker Compose**
-- **Maven**
-- **Micrometer Tracing**
-- **Zipkin**
+```powershell
+Invoke-RestMethod `
+    -Uri "http://localhost:8080/api/reputacoes" |
+    ConvertTo-Json -Depth 10
+```
 
----
+Para consultar diretamente o banco:
 
-# 📚 Conceitos Aplicados
+```powershell
+docker exec -it freela-postgres psql -U freela -d reputacao_db -c "SELECT freelancer_id, contratos_concluidos, valor_total FROM reputacoes;"
+```
+
+O valor agregado pode incluir outros contratos de testes anteriores. Para validar o resultado, considere o histórico anterior do freelancer.
+
+### 6. Consultar notificações
+
+```powershell
+Invoke-RestMethod `
+    -Uri "http://localhost:8080/api/notificacoes" |
+    ConvertTo-Json -Depth 10
+```
+
+A rota acima deve ser conferida com a configuração real do Gateway e do `notificacao-service`. Caso o endpoint de consulta seja diferente, utilize o caminho efetivamente configurado.
+
+### 7. Conferir a publicação na Outbox
+
+No banco `contrato_db`, consulte os registros da Outbox:
+
+```powershell
+docker exec -it freela-postgres psql -U freela -d contrato_db -c "SELECT * FROM outbox_events ORDER BY occurred_at DESC LIMIT 10;"
+```
+
+A consulta pressupõe que a tabela utilize a coluna `occurred_at`. Ajuste a ordenação se o nome da coluna real for diferente.
+
+Os eventos publicados devem apresentar o horário de publicação preenchido no campo `published_at`.
+
+## 🧪 Testes Automatizados
+
+Na raiz do repositório, execute:
+
+### Executar os testes
+
+```powershell
+mvn test
+```
+
+### Verificar compilação e ciclo de build
+
+```powershell
+mvn clean verify
+```
+
+O resultado desses comandos deve ser verificado no ambiente local. Testes que dependem de PostgreSQL, Kafka ou outros serviços externos podem exigir infraestrutura previamente iniciada.
+
+## 🛠️ Tecnologias Utilizadas
+
+- Java 21
+- Spring Boot
+- Spring Cloud
+- Spring Cloud Gateway
+- Netflix Eureka
+- Spring Data JPA
+- PostgreSQL
+- Apache Kafka
+- Kafka UI
+- Docker e Docker Compose
+- Maven
+- Micrometer Tracing
+- Zipkin
+- Loki e Grafana, caso habilitados no ambiente
+
+## 📚 Conceitos Aplicados
 
 - Arquitetura de microsserviços.
 - Domain-Driven Design (DDD).
@@ -702,13 +835,11 @@ Após a conclusão, verifique os logs do `contrato-service` e dos consumidores. 
 - API Gateway.
 - Auditoria de eventos.
 - Identificadores de correlação.
-- Logs e rastreamento distribuído.
+- Logs estruturados e rastreamento distribuído.
 - Conteinerização com Docker Compose.
 
----
-
-# 👩‍💻 Autora
+## 👩‍💻 Autora
 
 **Letícia Gomes**
 
-Projeto desenvolvido no contexto da disciplina de **Desenvolvimento de Softwares Escaláveis**, com foco em microsserviços, Domain-Driven Design, comunicação assíncrona com Kafka, confiabilidade no processamento de eventos e observabilidade em sistemas distribuídos.
+Projeto desenvolvido para a disciplina de Domain-Driven Design (DDD) e Arquitetura de Softwares Escaláveis com Java do bloco de Desenvolvimento de Softwares Escaláveis, com foco em microsserviços, Domain-Driven Design, comunicação assíncrona com Kafka, confiabilidade no processamento de eventos e observabilidade em sistemas distribuídos.

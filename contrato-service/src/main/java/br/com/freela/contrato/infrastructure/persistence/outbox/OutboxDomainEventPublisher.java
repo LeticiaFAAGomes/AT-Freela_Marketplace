@@ -2,11 +2,13 @@ package br.com.freela.contrato.infrastructure.persistence.outbox;
 
 import br.com.freela.contrato.domain.event.ContratoConcluido;
 import br.com.freela.contrato.domain.event.ContratoCriado;
+import br.com.freela.contrato.domain.event.EntregaRegistrada;
 import br.com.freela.contrato.domain.shared.DomainEvent;
 import br.com.freela.contrato.domain.shared.DomainEventPublisher;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,7 @@ import java.util.UUID;
 @Component
 public class OutboxDomainEventPublisher implements DomainEventPublisher {
 
+    @Autowired
     private OutboxRepository outboxRepository;
 
     @Autowired
@@ -29,6 +32,8 @@ public class OutboxDomainEventPublisher implements DomainEventPublisher {
 
                 if (evento instanceof ContratoCriado criado) {
                     contratoId = criado.contratoId();
+                } else if (evento instanceof EntregaRegistrada entrega) {
+                    contratoId = entrega.contratoId();
                 } else if (evento instanceof ContratoConcluido concluido) {
                     contratoId = concluido.contratoId();
                 } else {
@@ -39,6 +44,11 @@ public class OutboxDomainEventPublisher implements DomainEventPublisher {
 
                 ObjectNode payload = objectMapper.valueToTree(evento);
                 payload.put("eventType", evento.eventType());
+
+                String correlationId = MDC.get("correlationId");
+                if (correlationId != null) {
+                    payload.put("correlationId", correlationId);
+                }
 
                 outboxRepository.save(new OutboxEvent(
                         evento.eventId(),

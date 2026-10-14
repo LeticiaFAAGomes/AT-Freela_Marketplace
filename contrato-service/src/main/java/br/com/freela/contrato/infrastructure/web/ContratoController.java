@@ -4,6 +4,7 @@ import br.com.freela.contrato.application.*;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,25 +36,23 @@ public class ContratoController {
     }
 
     @PutMapping("/{id}/entrega")
-    public ContratoResponse registrarEntrega(@PathVariable UUID id) {
-        log.info("http.contrato.entrega.inicio contratoId={}", id);
-
+    public ContratoResponse registrarEntrega(@PathVariable("id") UUID id) {
+        String correlationId = MDC.get("correlationId");
+        log.info("http.contrato.entrega.inicio correlationId={} contratoId={}", correlationId, id);
         var contrato = criarEntregaService.registrar(id);
-
-        log.info("http.contrato.entrega.sucesso contratoId={} status={}",
-                id, contrato.status());
+        log.info("http.contrato.entrega.sucesso correlationId={} contratoId={} status={}",
+                correlationId, id, contrato.status());
 
         return ContratoResponse.from(contrato);
     }
 
     @PutMapping("/{id}/concluir")
-    public ContratoResponse concluir(@PathVariable UUID id) {
-        log.info("http.contrato.concluir.inicio contratoId={}", id);
-
+    public ContratoResponse concluir(@PathVariable("id") UUID id) {
+        String correlationId = MDC.get("correlationId");
+        log.info("http.contrato.concluir.inicio correlationId={} contratoId={}", correlationId, id);
         var contrato = concluirContratoService.concluir(id);
-
-        log.info("http.contrato.concluir.sucesso contratoId={} status={}",
-                id, contrato.status());
+        log.info("http.contrato.concluir.sucesso correlationId={} contratoId={} status={}",
+                correlationId, id, contrato.status());
 
         return ContratoResponse.from(contrato);
     }

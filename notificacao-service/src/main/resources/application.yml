@@ -20,6 +20,10 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     listener:
       ack-mode: record
+      concurrency: 3
+      observation-enabled: true
+    template:
+      observation-enabled: true
 management:
   tracing:
     sampling:
