@@ -1,4 +1,10 @@
 services:
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: freela-zipkin
+    ports:
+      - "9411:9411"
+    networks: [ freela-net ]
   postgres:
     image: postgres:16
     container_name: freela-postgres

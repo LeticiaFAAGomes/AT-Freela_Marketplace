@@ -22,6 +22,12 @@ spring:
     outbox:
       intervalo-ms: 1000
 management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/api/v2/spans}
   endpoints:
     web:
       exposure:
