@@ -10,18 +10,21 @@ import java.util.UUID;
 class Notificacao {
     @Id
     UUID id;
-    UUID contratoId;
-    UUID destinatarioId;
-    String tipo;
+    @Column(nullable = false)
+    private UUID eventoId;
+    private UUID contratoId;
+    private UUID destinatarioId;
+    private String tipo;
     @Column(length = 500)
-    String mensagem;
-    Instant criadaEm;
+    private String mensagem;
+    private Instant criadaEm;
 
     protected Notificacao() {
     }
 
-    Notificacao(UUID contratoId, UUID destinatarioId, String tipo, String mensagem) {
+    Notificacao(UUID eventoId, UUID contratoId, UUID destinatarioId, String tipo, String mensagem) {
         this.id = UUID.randomUUID();
+        this.eventoId = eventoId;
         this.contratoId = contratoId;
         this.destinatarioId = destinatarioId;
         this.tipo = tipo;

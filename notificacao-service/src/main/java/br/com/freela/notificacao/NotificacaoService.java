@@ -15,13 +15,18 @@ public class NotificacaoService {
     private NotificacaoRepository repository;
 
     @Transactional
-    public void registrar(UUID contratoId, UUID destinatarioId, String tipo, String mensagem) {
-        log.info("notificacao.registro.inicio contratoId={} destinatarioId={} tipo={}",
-                contratoId, destinatarioId, tipo);
+    public void registrar(UUID eventoId, UUID contratoId, UUID destinatarioId, String tipo, String mensagem) {
+        if (repository.existsByEventoIdAndDestinatarioId(eventoId, destinatarioId)) {
+            log.info("notificacao.duplicada ignorada eventoId={} destinatarioId={}",
+                    eventoId, destinatarioId);
+            return;
+        }
 
-        var n = repository.save(new Notificacao(contratoId, destinatarioId, tipo, mensagem));
+        Notificacao notificacao = repository.save(
+                new Notificacao(eventoId, contratoId, destinatarioId, tipo, mensagem)
+        );
 
-        log.info("notificacao.registro.sucesso notificacaoId={} contratoId={} destinatarioId={}",
-                n.id, contratoId, destinatarioId);
+        log.info("notificacao.registro.sucesso notificacaoId={} eventoId={} contratoId={}",
+                notificacao.id, eventoId, contratoId);
     }
 }

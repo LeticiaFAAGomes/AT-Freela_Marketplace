@@ -16,8 +16,24 @@ public class AuditoriaService {
 
     @Transactional
     public void registrar(UUID eventId, UUID aggregateId, String eventType, String correlationId, String payload) {
-        log.info("auditoria.registro.inicio eventId={} aggregateId={} eventType={} correlationId={}", eventId, aggregateId, eventType, correlationId);
-        var e = repository.save(new EventoAuditoria(eventId, aggregateId, eventType, correlationId, payload));
-        log.info("auditoria.registro.sucesso auditoriaId={} eventId={} aggregateId={} eventType={}", e.id, eventId, aggregateId, eventType);
+        if (repository.existsByEventId(eventId)) {
+            log.info("auditoria.evento.duplicado eventId={}", eventId);
+            return;
+        }
+        log.info("auditoria.registro.inicio eventId={} aggregateId={} eventType={}",
+                eventId, aggregateId, eventType
+        );
+        EventoAuditoria evento = repository.save(
+                new EventoAuditoria(
+                        eventId,
+                        aggregateId,
+                        eventType,
+                        correlationId,
+                        payload
+                )
+        );
+        log.info("auditoria.registro.sucesso auditoriaId={} eventId={}",
+                evento.id, eventId
+        );
     }
 }
