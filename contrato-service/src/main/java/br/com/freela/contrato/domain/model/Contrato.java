@@ -1,10 +1,9 @@
 package br.com.freela.contrato.domain.model;
 
+import br.com.freela.contrato.domain.event.ContratoConcluido;
 import br.com.freela.contrato.domain.event.ContratoCriado;
 import br.com.freela.contrato.domain.shared.DomainEvent;
-import lombok.AllArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,11 +55,13 @@ public class Contrato {
         status = StatusContrato.ENTREGA_REGISTRADA;
     }
 
-    public void concluir() {
-        if (status != StatusContrato.ENTREGA_REGISTRADA)
-            throw new IllegalStateException("A entrega precisa estar registrada");
-        status = StatusContrato.CONCLUIDO;
+public void concluir() {
+    if (status != StatusContrato.ENTREGA_REGISTRADA) {
+        throw new IllegalStateException("A entrega precisa estar registrada.");
     }
+    status = StatusContrato.CONCLUIDO;
+    domainEvents.add(ContratoConcluido.novo(this));
+}
 
     public void cancelar() {
         if (status == StatusContrato.CONCLUIDO)
